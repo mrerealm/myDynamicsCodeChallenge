@@ -1,10 +1,10 @@
 ﻿using System;
 namespace myDynamicsCodeChallenge.Shared.Enumerations
 {
-    public enum ClausePositions
+    public enum Position
     {
-        Left=1,
+        None=0,
+        Left = 1,
         Right=2,
-        Generated=3
     }
 }

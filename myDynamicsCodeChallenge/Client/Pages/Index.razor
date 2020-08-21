@@ -1,7 +1,111 @@
 ﻿@page "/"
+@inject IJSRuntime JsRuntime;
+@using myDynamicsCodeChallenge.Shared.Models
+@using myDynamicsCodeChallenge.Shared.Enumerations
 
-<h1>Hello, world!</h1>
+<div class="container-fluid">
+    <img src="https://mydynamics.io/Content/images/logo.png" />
+    <h1>myDynamics Code Challenge</h1>
 
-Welcome to your new app.
+    <div class="multiple-selector">
+        <div class="row top-buffer">
+            <div class="col-md-4">
+                <h3>Left List</h3>
+            </div>
+            <div class="col-md-4">
+                &nbsp;
+            </div>
+            <div class="col-md-4">
+                <h3>Right List</h3>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 h-100 d-inline-block rounded listcontainer border border-primary">
+                <ul class="list-group">
+                    @foreach (var item in Clauses.Where(c => c.Position == Position.Left).ToList())
+                    {
+                        <li class="list-group-item @(SelectedLeftId == item.Id ? "active" : "")"
+                            @onclick="@(() => Select(item.Id, Position.Left))"
+                            @ondblclick="MoveToRight">@item.Text</li>
+                        }
+                </ul>
+            </div>
+            <div class="col-md-4 text-center">
+                <div class="multiple-selector-buttons">
+                    <button type="button" class="mdButton btn btn-success w-75" @onclick="MoveToRight">To Right >> </button><br />
+                    <button type="button" class="mdButton btn btn-primary w-75" @onclick="MoveToLeft">@toLeft To Left</button>
+                </div>
+            </div>
+            <div class="col-md-4 h-100 d-inline-block rounded listcontainer border border-success">
+                <ul class="list-group">
+                    @foreach (var item in Clauses.Where(c => c.Position == Position.Right).ToList())
+                    {
+                        <li class="list-group-item @(SelectedRightId == item.Id ? "active" : "")"
+                            @onclick="@(() => Select(item.Id, Position.Right))">@item.Text</li>
+                        }
+                </ul>
+            </div>
+        </div>
+        <div class="row top-buffer">
+            <div class="col-md-4">
+                <button type="button" class="mdButton btn btn-warning w-75" @onclick="GenerateClauses">Generate Clauses</button>
+            </div>
+            <div class="col-md-8">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Clauses</span>
+                    </div>
+                    <textarea class="form-control" aria-label="With textarea"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+@code {
+    private string toLeft = "<<";
+    public int SelectedLeftId { get; set; } = 0;
+    public int SelectedRightId { get; set; } = 0;
+    public List<ClauseModel> Clauses { get; set; } = new List<ClauseModel>
+{
+        new ClauseModel {Id = 1, Position = Position.Left, Text = "A"},
+        new ClauseModel {Id = 2, Position = Position.Left, Text = "B"},
+        new ClauseModel {Id = 3, Position = Position.Left, Text = "C"},
+        new ClauseModel {Id = 4, Position = Position.Left, Text = "D"},
+    };
+
+    private async void Select(int id, Position position)
+    {
+        if (position == Position.Left)
+            SelectedLeftId = id;
+        else
+            SelectedRightId = id;
+
+        var msg = $"Selected {id}";
+        Console.WriteLine(msg);
+    }
+
+    private async void MoveToRight()
+    {
+        var msg = $"MoveToRight {SelectedLeftId}?";
+        Console.WriteLine(msg);
+    }
+
+    private async void MoveToLeft()
+    {
+        var msg = $"MoveToLeft {SelectedRightId}?";
+        Console.WriteLine(msg);
+    }
+
+    private void Reset()
+    {
+
+    }
+
+    private void GenerateClauses()
+    {
+
+
+    }
+}
+

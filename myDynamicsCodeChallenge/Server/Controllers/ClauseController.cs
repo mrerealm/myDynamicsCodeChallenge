@@ -31,12 +31,12 @@ namespace myDynamicsCodeChallenge.Server.Controllers
             return Ok();
         }
 
-        [HttpGet("{position}")]
-        public IActionResult Get(int position)
+        [HttpGet]
+        public IActionResult Get()
         {
             try
             {
-                var results = _clauseService.GetClauses((ClausePositions)position);
+                var results = _clauseService.GetClauses();
                 return Ok(results);
             }
             catch (Exception ex)
@@ -50,7 +50,7 @@ namespace myDynamicsCodeChallenge.Server.Controllers
         {
             try
             {
-                _clauseService.MoveClauseToPosition(id, (ClausePositions)position);
+                _clauseService.MoveClauseToPosition(id, (Position)position);
                 return Ok();
             }
             catch (Exception ex)

@@ -7,6 +7,6 @@ namespace myDynamicsCodeChallenge.Shared.Models
     {
         public int Id { get; set; }
         public string Text { get; set; }
-        public ClausePositions Position { get; set; }
+        public Position Position { get; set; }
     }
 }

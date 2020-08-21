@@ -26,7 +26,7 @@ namespace myDynamicsCodeChallenge.Server.Services
             _context.Clauses.FromSqlRaw("EXECUTE dbo.ResetClauses");
         }
 
-        public List<ClauseModel> GetClauses(ClausePositions position)
+        public List<ClauseModel> GetClauses()
         {
             var results = _context.Clauses
                 .Join(_context.ClausePositions,
@@ -36,13 +36,13 @@ namespace myDynamicsCodeChallenge.Server.Services
                     {
                         Id = c.Id,
                         Text = c.Text,
-                        Position = (ClausePositions)cp.PositionId
+                        Position = (Position)cp.PositionId
                     }).ToList();
 
             return results;
         }
 
-        public void MoveClauseToPosition(int id, ClausePositions position)
+        public void MoveClauseToPosition(int id, Position position)
         {
             _context.Clauses.FromSqlRaw("EXECUTE dbo.MoveClauseToPosition @Id, @Position", id, (int)position);
         }
