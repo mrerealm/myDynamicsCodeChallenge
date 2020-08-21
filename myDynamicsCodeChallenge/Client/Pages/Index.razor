@@ -38,8 +38,12 @@
                 </div>
                 <div class="col-md-2 text-center">
                     <div class="multiple-selector-buttons">
-                        <button type="button" class="mdButton btn btn-success w-100" @onclick="MoveToRight">To Right >> </button><br />
-                        <button type="button" class="mdButton btn btn-primary w-100" @onclick="MoveToLeft">@toLeft To Left</button>
+                        <button type="button" class="mdButton btn btn-success w-100"
+                                @onclick="MoveToRight"
+                                hidden="@HideButton(Position.Left)">To Right >> </button><br />
+                        <button type="button" class="mdButton btn btn-primary w-100"
+                                @onclick="MoveToLeft"
+                                hidden="@HideButton(Position.Right)">@toLeft To Left</button>
 
                         <div class="alert alert-danger fade show w-100 top-buffer small" role="alert" hidden="@HideError">
                             Select an item before moving it
@@ -115,9 +119,9 @@
     {
         int id = 0;
         if (position == Position.Right)
-            { id = SelectedLeftId; SelectedLeftId = 0; }
+        { id = SelectedLeftId; SelectedLeftId = 0; }
         else
-            { id = SelectedRightId; SelectedRightId = 0; }
+        { id = SelectedRightId; SelectedRightId = 0; }
 
         if (id > 0)
         {
@@ -134,16 +138,16 @@
         if (item == null || e == null)
             return;
 
-        WriteToConsole($"{item.Text} {e.Value}");
-        var isItemInList = GenerateList.Any(c => c.Id == item.Id);
+        var index = GenerateList.FindIndex(c => c.Id == item.Id);
+        WriteToConsole($"{item.Text} {e.Value} {index >= 0}");
         if ((bool)e.Value)
         {
-            if (!isItemInList)
+            if (index < 0)
                 GenerateList.Add(item);
         }
         else
-            if (isItemInList)
-            GenerateList.Remove(item);
+            if (index >= 0)
+            GenerateList.RemoveAt(index);
 
         WriteToConsole(String.Join(",", GenerateList.Select(c => c.Text)));
     }
@@ -152,8 +156,10 @@
     {
         GeneratedClauses = String.Join(System.Environment.NewLine, GenerateList.OrderBy(c => c.Id).Select(c => c.Text));
         StateHasChanged();
-        WriteToConsole(String.Join(",", GenerateList.Select(c => c.Text)));
+        WriteToConsole(String.Join(",", GenerateList.OrderBy(c => c.Id).Select(c => c.Text)));
     }
+
+    private bool HideButton(Position position) => !Clauses.Any(c => c.Position == position);
 
     private void WriteToConsole(string msg)
     {
