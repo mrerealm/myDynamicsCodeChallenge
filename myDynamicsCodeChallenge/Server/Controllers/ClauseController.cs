@@ -42,7 +42,7 @@ namespace myDynamicsCodeChallenge.Server.Controllers
         {
             try
             {
-                return _clauseService.GetAllClauses();
+                return _clauseService.GetAll();
             }
             catch (Exception ex)
             {

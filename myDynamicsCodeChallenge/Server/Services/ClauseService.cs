@@ -23,7 +23,7 @@ namespace myDynamicsCodeChallenge.Server.Services
             _context = clauseDbContext;
         }
 
-        public IEnumerable<ClauseModel> GetAllClauses()
+        public IEnumerable<ClauseModel> GetAll()
         {
             var results = _context.Clauses
                 .Join(_context.ClausePositions,
@@ -41,16 +41,16 @@ namespace myDynamicsCodeChallenge.Server.Services
 
         public IEnumerable<ClauseModel> Reset()
         {
-            _context.Clauses.FromSqlRaw("EXECUTE dbo.ResetClauses");
-            _context.Save();
-            return GetAllClauses();
+            _context.Clauses.FromSqlRaw(ResetClausesSpCall);
+            return GetAll();
         }
 
         public IEnumerable<ClauseModel> MoveClauseToPosition(int id, Position position)
         {
-            _context.Clauses.FromSqlRaw(MoveClauseToPositionSpCall, id, (int)position);
-            _context.Save();
-            return GetAllClauses();
+            var result = _context.Clauses.FromSqlRaw(MoveClauseToPositionSpCall,
+                new SqlParameter("Id", id),
+                new SqlParameter("Position", (int)position));
+            return GetAll();
         }
     }
 }

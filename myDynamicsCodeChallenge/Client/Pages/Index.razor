@@ -22,7 +22,7 @@
         </div>
         @if (Clauses == null)
         {
-            <p><em>Loading...</em></p>
+            <p><em>Loading Clauses from Database ...</em></p>
         }
         else
         {
@@ -62,7 +62,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text">Clauses</span>
                         </div>
-                        <textarea class="form-control" aria-label="With textarea"></textarea>
+                        <textarea class="form-control" aria-label="With textarea">@GeneratedClauses</textarea>
                     </div>
                 </div>
             </div>
@@ -76,6 +76,7 @@
     public int SelectedLeftId { get; set; }
     public int SelectedRightId { get; set; }
     public List<ClauseModel> Clauses { get; set; }
+    public string GeneratedClauses { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -89,33 +90,40 @@
         else
             SelectedRightId = id;
 
-        var msg = $"Selected {id}";
-        Console.WriteLine(msg);
+        WriteToConsole($"Selected {id}");
     }
 
     private async void MoveToRight()
     {
-        var msg = $"MoveToRight {SelectedLeftId}?";
-        Console.WriteLine(msg);
-        Clauses = await Http.GetFromJsonAsync<List<ClauseModel>>($"api/clause/{SelectedLeftId}/{(int)Position.Right}");
-        StateHasChanged();
+
+        if (SelectedLeftId > 0)
+        {
+            WriteToConsole($"MoveToRight {SelectedLeftId}?");
+            Clauses = await Http.GetFromJsonAsync<List<ClauseModel>>($"api/clause/{SelectedLeftId}/{(int)Position.Right}");
+            StateHasChanged();
+        }
     }
 
     private async void MoveToLeft()
     {
-        var msg = $"MoveToLeft {SelectedRightId}?";
-        Console.WriteLine(msg);
-        Clauses = await Http.GetFromJsonAsync<List<ClauseModel>>($"api/clause/{SelectedLeftId}/{(int)Position.Left}");
-    }
-
-    private async void Reset()
-    {
-        Console.WriteLine("reset");
-        Clauses = await Http.GetFromJsonAsync<List<ClauseModel>>($"api/clause/reset");
+        WriteToConsole($"MoveToLeft {SelectedRightId}?");
+        if (SelectedRightId > 0)
+        {
+            Clauses = await Http.GetFromJsonAsync<List<ClauseModel>>($"api/clause/{SelectedLeftId}/{(int)Position.Left}");
+            StateHasChanged();
+        }
     }
 
     private void GenerateClauses()
     {
+        var rightClauses = Clauses.Where(c => c.Position == Position.Right).Select(c => c.Text);
+        GeneratedClauses = String.Join(System.Environment.NewLine, rightClauses);
+        StateHasChanged();
+    }
+
+    private void WriteToConsole(string msg)
+    {
+        Console.WriteLine(msg);
     }
 }
 

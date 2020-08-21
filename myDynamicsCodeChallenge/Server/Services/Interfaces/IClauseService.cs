@@ -8,7 +8,7 @@ namespace myDynamicsCodeChallenge.Server.Services.Interfaces
     public interface IClauseService
     {
         public IEnumerable<ClauseModel> Reset();
-        public IEnumerable<ClauseModel> GetAllClauses();
+        public IEnumerable<ClauseModel> GetAll();
         public IEnumerable<ClauseModel> MoveClauseToPosition(int id, Position position);
     }
 }
