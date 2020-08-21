@@ -1,14 +1,10 @@
-﻿using myDynamicsCodeChallenge.Shared;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using myDynamicsCodeChallenge.Server.Persistence;
 using myDynamicsCodeChallenge.Server.Services.Interfaces;
 using myDynamicsCodeChallenge.Shared.Enumerations;
-using myDynamicsCodeChallenge.Shared.Entities;
+using myDynamicsCodeChallenge.Shared.Models;
 
 namespace myDynamicsCodeChallenge.Server.Controllers
 {
@@ -17,46 +13,57 @@ namespace myDynamicsCodeChallenge.Server.Controllers
     public class ClauseController : ControllerBase
     {
         private readonly IClauseService _clauseService;
+        private readonly ILogger<ClauseController> _logger;
 
-        public ClauseController(IClauseService clauseService)
+        public ClauseController(ILogger<ClauseController> logger,
+            IClauseService clauseService)
         {
+            _logger = logger;
             _clauseService = clauseService;
         }
 
         [HttpGet]
         [Route("reset")]
-        public IActionResult Reset()
+        public IEnumerable<ClauseModel> Reset()
         {
-            _clauseService.Reset();
-            return Ok();
+            try
+            {
+                return _clauseService.Reset();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.GetBaseException().Message, ex);
+            }
+            return null;
         }
 
         [HttpGet]
-        public IActionResult Get()
+        public IEnumerable<ClauseModel> Get()
         {
             try
             {
-                var results = _clauseService.GetClauses();
-                return Ok(results);
+                return _clauseService.GetAllClauses();
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.GetBaseException().Message);
+                _logger.LogError(ex.GetBaseException().Message, ex);
             }
+            return null;
         }
 
-        [HttpPut("{id}/{position}")]
-        public IActionResult MoveClauseToPosition(int id, int position)
+        [HttpGet("{id}/{position}")]
+        [Route("move")]
+        public IEnumerable<ClauseModel> MoveClauseToPosition(int id, int position)
         {
             try
             {
-                _clauseService.MoveClauseToPosition(id, (Position)position);
-                return Ok();
+                return _clauseService.MoveClauseToPosition(id, (Position)position);
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.GetBaseException().Message);
+                _logger.LogError(ex.GetBaseException().Message, ex);
             }
+            return null;
         }
 
     }

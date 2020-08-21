@@ -8,6 +8,8 @@ namespace myDynamicsCodeChallenge.Server.Persistence
 {
     public class ApplicationDBContext: DbContext, IApplicationDBContext
     {
+        public ApplicationDBContext() { }
+
         public ApplicationDBContext(DbContextOptions<ApplicationDBContext> options) : base(options)
         {
         }
@@ -40,6 +42,13 @@ namespace myDynamicsCodeChallenge.Server.Persistence
                     new ClausePosition { ClauseId = 1,  PositionId = 1 },
                     new ClausePosition { ClauseId = 1,  PositionId = 1 }
                 );
+        }
+
+        public void Save() => base.SaveChanges();
+
+        public DbContext GetContext()
+        {
+            return (DbContext)Activator.CreateInstance(typeof(ApplicationDBContext));
         }
     }
 }

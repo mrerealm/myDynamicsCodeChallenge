@@ -10,5 +10,6 @@ namespace myDynamicsCodeChallenge.Server.Persistence.Interfaces
         public DbSet<Clause> Clauses { get; set; }
         public DbSet<ListPosition> ListPositions { get; set; }
         public DbSet<ClausePosition> ClausePositions { get; set; }
+        public void Save();
     }
 }
