@@ -1,5 +1,4 @@
 ﻿@page "/"
-@using System.Net.Http
 @inject HttpClient Http
 @using myDynamicsCodeChallenge.Shared.Models
 @using myDynamicsCodeChallenge.Shared.Enumerations
@@ -32,7 +31,7 @@
                         @foreach (var item in Clauses.Where(c => c.Position == Position.Left).ToList())
                         {
                             <li class="cursor-pointer list-group-item @(SelectedLeftId == item.Id ? "active" : "")"
-                                @onclick="@(() => Select(item.Id, Position.Left))"
+                                @onclick="@(() => Select(item))"
                                 @ondblclick="MoveToRight">@item.Text</li>
                             }
                     </ul>
@@ -49,12 +48,15 @@
                     </div>
                 </div>
                 <div class="col-md-5 h-100 d-inline-block rounded listcontainer border border-success">
-                    <ul class="list-group">
+                    <ul class="list-group checkbox-list-group">
                         @foreach (var item in Clauses.Where(c => c.Position == Position.Right).ToList())
                         {
                             <li class="cursor-pointer list-group-item list-group-item-success @(SelectedRightId == item.Id ? "active" : "")"
-                                @onclick="@(() => Select(item.Id, Position.Right))">@item.Text</li>
-                            }
+                                @onclick="@(() => Select(item))">
+                                <input type="checkbox" @onchange="@((ChangeEventArgs e) => ToGenerateList(item, e))"> @item.Text
+                            </li>
+
+                        }
                     </ul>
                 </div>
             </div>
@@ -80,34 +82,46 @@
 </div>
 
 
-@code {
+@code
+{
     private string toLeft = "<<";
+
+    public bool HideError { get; set; } = true;
     public int SelectedLeftId { get; set; }
     public int SelectedRightId { get; set; }
+
     public List<ClauseModel> Clauses { get; set; }
+    public List<ClauseModel> GenerateList { get; set; } = new List<ClauseModel>();
     public string GeneratedClauses { get; set; }
-    public bool HideError { get; set; } = true;
 
     protected override async Task OnInitializedAsync()
     {
         Clauses = await Http.GetFromJsonAsync<List<ClauseModel>>($"api/clause/reset");
     }
 
-    private void Select(int id, Position position)
+    private void Select(ClauseModel item)
     {
         HideError = true;
-        if (position == Position.Left)
-            SelectedLeftId = id;
+        if (item.Position == Position.Left)
+            SelectedLeftId = item.Id;
         else
-            SelectedRightId = id;
+            SelectedRightId = item.Id;
     }
 
-    private async void MoveToRight()
+    private void MoveToRight() => MoveToList(Position.Right);
+    private void MoveToLeft() => MoveToList(Position.Left);
+
+    private async void MoveToList(Position position)
     {
-        if (SelectedLeftId > 0)
+        int id = 0;
+        if (position == Position.Right)
+            { id = SelectedLeftId; SelectedLeftId = 0; }
+        else
+            { id = SelectedRightId; SelectedRightId = 0; }
+
+        if (id > 0)
         {
-            Clauses = await Http.GetFromJsonAsync<List<ClauseModel>>($"api/clause/{SelectedLeftId}/{(int)Position.Right}");
-            SelectedLeftId = 0;
+            Clauses = await Http.GetFromJsonAsync<List<ClauseModel>>($"api/clause/{id}/{(int)position}");
             HideError = true;
             StateHasChanged();
         }
@@ -115,24 +129,30 @@
             HideError = false;
     }
 
-    private async void MoveToLeft()
+    private void ToGenerateList(ClauseModel item, ChangeEventArgs e)
     {
-        if (SelectedRightId > 0)
+        if (item == null || e == null)
+            return;
+
+        WriteToConsole($"{item.Text} {e.Value}");
+        var isItemInList = GenerateList.Any(c => c.Id == item.Id);
+        if ((bool)e.Value)
         {
-            Clauses = await Http.GetFromJsonAsync<List<ClauseModel>>($"api/clause/{SelectedLeftId}/{(int)Position.Left}");
-            SelectedRightId = 0;
-            HideError = true;
-            StateHasChanged();
+            if (!isItemInList)
+                GenerateList.Add(item);
         }
         else
-            HideError = false;
+            if (isItemInList)
+            GenerateList.Remove(item);
+
+        WriteToConsole(String.Join(",", GenerateList.Select(c => c.Text)));
     }
 
     private void GenerateClauses()
     {
-        var rightClauses = Clauses.Where(c => c.Position == Position.Right).Select(c => c.Text);
-        GeneratedClauses = String.Join(System.Environment.NewLine, rightClauses);
+        GeneratedClauses = String.Join(System.Environment.NewLine, GenerateList.OrderBy(c => c.Id).Select(c => c.Text));
         StateHasChanged();
+        WriteToConsole(String.Join(",", GenerateList.Select(c => c.Text)));
     }
 
     private void WriteToConsole(string msg)
