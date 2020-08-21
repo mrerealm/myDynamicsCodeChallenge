@@ -6,7 +6,7 @@
 
 <div class="container-fluid">
     <img src="https://mydynamics.io/Content/images/logo.png" />
-    <h1>myDynamics Code Challenge</h1>
+    <h4>myDynamics Code Challenge</h4>
 
     <div class="multiple-selector">
         <div class="row top-buffer">
@@ -47,7 +47,7 @@
                     <ul class="list-group">
                         @foreach (var item in Clauses.Where(c => c.Position == Position.Right).ToList())
                         {
-                            <li class="list-group-item @(SelectedRightId == item.Id ? "active" : "")"
+                            <li class="list-group-item list-group-item-success @(SelectedRightId == item.Id ? "active" : "")"
                                 @onclick="@(() => Select(item.Id, Position.Right))">@item.Text</li>
                             }
                     </ul>
@@ -80,7 +80,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        Clauses = await Http.GetFromJsonAsync<List<ClauseModel>>($"api/clause");
+        Clauses = await Http.GetFromJsonAsync<List<ClauseModel>>($"api/clause/reset");
     }
 
     private void Select(int id, Position position)

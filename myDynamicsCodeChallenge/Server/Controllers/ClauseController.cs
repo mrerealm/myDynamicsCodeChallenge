@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using myDynamicsCodeChallenge.Server.Services.Interfaces;
@@ -24,11 +25,11 @@ namespace myDynamicsCodeChallenge.Server.Controllers
 
         [HttpGet]
         [Route("reset")]
-        public IEnumerable<ClauseModel> Reset()
+        public async Task<IEnumerable<ClauseModel>> Reset()
         {
             try
             {
-                return _clauseService.Reset();
+                return await _clauseService.ResetAsync();
             }
             catch (Exception ex)
             {
@@ -38,11 +39,11 @@ namespace myDynamicsCodeChallenge.Server.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<ClauseModel> Get()
+        public async Task<IEnumerable<ClauseModel>> Get()
         {
             try
             {
-                return _clauseService.GetAll();
+                return await _clauseService.GetAllAsync();
             }
             catch (Exception ex)
             {
@@ -53,11 +54,11 @@ namespace myDynamicsCodeChallenge.Server.Controllers
 
         [HttpGet("{id}/{position}")]
         [Route("move")]
-        public IEnumerable<ClauseModel> MoveClauseToPosition(int id, int position)
+        public async Task<IEnumerable<ClauseModel>> MoveClauseToPosition(int id, int position)
         {
             try
             {
-                return _clauseService.MoveClauseToPosition(id, (Position)position);
+                return await _clauseService.MoveClauseToPositionAsync(id, (Position)position);
             }
             catch (Exception ex)
             {

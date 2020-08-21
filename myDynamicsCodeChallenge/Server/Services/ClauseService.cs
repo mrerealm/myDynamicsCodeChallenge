@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using myDynamicsCodeChallenge.Server.Persistence;
@@ -15,17 +16,17 @@ namespace myDynamicsCodeChallenge.Server.Services
     public class ClauseService: IClauseService
     {
         private readonly IApplicationDBContext _context;
-        private readonly string MoveClauseToPositionSpCall = "[dbo].[MoveClauseToPosition] @Id, @Position";
-        private readonly string ResetClausesSpCall = "[dbo].[ResetClauses]";
+        private readonly string MoveClauseToPositionSpCall = "EXEC MoveClauseToPosition @Id, @Position";
+        private readonly string ResetClausesSpCall = "EXEC ResetClauses";
 
         public ClauseService(IApplicationDBContext clauseDbContext)
         {
             _context = clauseDbContext;
         }
 
-        public IEnumerable<ClauseModel> GetAll()
+        public async Task<IEnumerable<ClauseModel>> GetAllAsync()
         {
-            var results = _context.Clauses
+            var results = await _context.Clauses.AsNoTracking()
                 .Join(_context.ClausePositions,
                     c => c.Id,
                     cp => cp.ClauseId,
@@ -34,23 +35,25 @@ namespace myDynamicsCodeChallenge.Server.Services
                         Id = c.Id,
                         Text = c.Text,
                         Position = (Position)cp.PositionId
-                    });
+                    }).ToListAsync();
 
             return results;
         }
 
-        public IEnumerable<ClauseModel> Reset()
+        public Task<IEnumerable<ClauseModel>> ResetAsync()
         {
-            _context.Clauses.FromSqlRaw(ResetClausesSpCall);
-            return GetAll();
+            _ = _context.Clauses.FromSqlRaw(ResetClausesSpCall)
+                                .AsNoTracking();
+            return GetAllAsync();
         }
 
-        public IEnumerable<ClauseModel> MoveClauseToPosition(int id, Position position)
+        public async Task<IEnumerable<ClauseModel>> MoveClauseToPositionAsync(int id, Position position)
         {
-            var result = _context.Clauses.FromSqlRaw(MoveClauseToPositionSpCall,
+            _ = _context.Clauses.FromSqlRaw(MoveClauseToPositionSpCall,
                 new SqlParameter("Id", id),
-                new SqlParameter("Position", (int)position));
-            return GetAll();
+                new SqlParameter("Position", (int)position))
+                    .AsNoTracking();
+            return await GetAllAsync();
         }
     }
 }
