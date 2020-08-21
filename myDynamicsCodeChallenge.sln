@@ -1,0 +1,29 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "myDynamicsCodeChallenge.Server", "myDynamicsCodeChallenge\Server\myDynamicsCodeChallenge.Server.csproj", "{ADCA7A66-6661-40E8-B6E1-2F98021208EF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "myDynamicsCodeChallenge.Client", "myDynamicsCodeChallenge\Client\myDynamicsCodeChallenge.Client.csproj", "{20C85CBD-C1FA-4469-916D-AD6F91209903}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "myDynamicsCodeChallenge.Shared", "myDynamicsCodeChallenge\Shared\myDynamicsCodeChallenge.Shared.csproj", "{9B42630C-EF13-4EF6-BD29-B46BDD3C312A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{ADCA7A66-6661-40E8-B6E1-2F98021208EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ADCA7A66-6661-40E8-B6E1-2F98021208EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ADCA7A66-6661-40E8-B6E1-2F98021208EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ADCA7A66-6661-40E8-B6E1-2F98021208EF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{20C85CBD-C1FA-4469-916D-AD6F91209903}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{20C85CBD-C1FA-4469-916D-AD6F91209903}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{20C85CBD-C1FA-4469-916D-AD6F91209903}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{20C85CBD-C1FA-4469-916D-AD6F91209903}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9B42630C-EF13-4EF6-BD29-B46BDD3C312A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B42630C-EF13-4EF6-BD29-B46BDD3C312A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B42630C-EF13-4EF6-BD29-B46BDD3C312A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B42630C-EF13-4EF6-BD29-B46BDD3C312A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
