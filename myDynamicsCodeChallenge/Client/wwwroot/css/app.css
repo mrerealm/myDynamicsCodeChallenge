@@ -103,7 +103,7 @@ app {
 
 .listcontainer {
     padding: 3px;
-    min-height: 100px !important;
+    min-height: 200px !important;
 }
 
 .mdButton {
