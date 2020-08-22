@@ -40,10 +40,14 @@
                     <div class="multiple-selector-buttons">
                         <button type="button" class="mdButton btn btn-success w-100"
                                 @onclick="MoveToRight"
-                                hidden="@HideButton(Position.Left)">To Right >> </button><br />
+                                hidden="@HideListButton(Position.Left)">
+                            To Right >>
+                        </button><br />
                         <button type="button" class="mdButton btn btn-primary w-100"
                                 @onclick="MoveToLeft"
-                                hidden="@HideButton(Position.Right)">@toLeft To Left</button>
+                                hidden="@HideListButton(Position.Right)">
+                            @toLeft To Left
+                        </button>
 
                         <div class="alert alert-danger fade show w-100 top-buffer small" role="alert" hidden="@HideError">
                             Select an item before moving it
@@ -88,7 +92,8 @@
 
 @code
 {
-    private string toLeft = "<<";
+    private readonly string toLeft = "<<";
+    private readonly string apiBaseUrl = "api/clause";
 
     public bool HideError { get; set; } = true;
     public int SelectedLeftId { get; set; }
@@ -100,7 +105,8 @@
 
     protected override async Task OnInitializedAsync()
     {
-        Clauses = await Http.GetFromJsonAsync<List<ClauseModel>>($"api/clause/reset");
+        var apiUrl = $"{apiBaseUrl}/reset";
+        Clauses = await Http.GetFromJsonAsync<List<ClauseModel>>(apiUrl);
     }
 
     private void Select(ClauseModel item)
@@ -125,7 +131,9 @@
 
         if (id > 0)
         {
-            Clauses = await Http.GetFromJsonAsync<List<ClauseModel>>($"api/clause/{id}/{(int)position}");
+            var apiUrl = $"{apiBaseUrl}/{id}/{(int)position}";
+            WriteToConsole(apiUrl);
+            Clauses = await Http.GetFromJsonAsync<List<ClauseModel>>(apiUrl);
             HideError = true;
             StateHasChanged();
         }
@@ -139,7 +147,6 @@
             return;
 
         var index = GenerateList.FindIndex(c => c.Id == item.Id);
-        WriteToConsole($"{item.Text} {e.Value} {index >= 0}");
         if ((bool)e.Value)
         {
             if (index < 0)
@@ -147,19 +154,16 @@
         }
         else
             if (index >= 0)
-            GenerateList.RemoveAt(index);
-
-        WriteToConsole(String.Join(",", GenerateList.Select(c => c.Text)));
+            GenerateList.RemoveAt(index); // GenerateList.Remove(item) fails when list is refreshed
     }
 
     private void GenerateClauses()
     {
         GeneratedClauses = String.Join(System.Environment.NewLine, GenerateList.OrderBy(c => c.Id).Select(c => c.Text));
         StateHasChanged();
-        WriteToConsole(String.Join(",", GenerateList.OrderBy(c => c.Id).Select(c => c.Text)));
     }
 
-    private bool HideButton(Position position) => !Clauses.Any(c => c.Position == position);
+    private bool HideListButton(Position position) => !Clauses.Any(c => c.Position == position);
 
     private void WriteToConsole(string msg)
     {

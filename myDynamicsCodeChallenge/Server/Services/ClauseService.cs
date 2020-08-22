@@ -26,7 +26,8 @@ namespace myDynamicsCodeChallenge.Server.Services
 
         public async Task<IEnumerable<ClauseModel>> GetAllAsync()
         {
-            var results = await _context.Clauses.AsNoTracking()
+            var results = await _context.Clauses
+                .AsNoTracking()
                 .Join(_context.ClausePositions,
                     c => c.Id,
                     cp => cp.ClauseId,
@@ -40,19 +41,29 @@ namespace myDynamicsCodeChallenge.Server.Services
             return results;
         }
 
-        public Task<IEnumerable<ClauseModel>> ResetAsync()
+        public async Task<IEnumerable<ClauseModel>> ResetAsync()
         {
-            _ = _context.Clauses.FromSqlRaw(ResetClausesSpCall)
-                                .AsNoTracking();
-            return GetAllAsync();
+             await _context.ExecuteSqlCommandAsync(ResetClausesSpCall);
+
+            // this is the best option - however it is not working on my environment
+            _context.Clauses
+                .FromSqlRaw(ResetClausesSpCall)
+                .AsNoTracking();
+            return await GetAllAsync();
         }
 
         public async Task<IEnumerable<ClauseModel>> MoveClauseToPositionAsync(int id, Position position)
         {
-            _ = _context.Clauses.FromSqlRaw(MoveClauseToPositionSpCall,
-                new SqlParameter("Id", id),
-                new SqlParameter("Position", (int)position))
-                    .AsNoTracking();
+            await _context.ExecuteSqlCommandAsync(MoveClauseToPositionSpCall,
+                    new SqlParameter("Id", id),
+                    new SqlParameter("Position", (int)position));
+
+            // this is the best option - however it is not working on my environment
+            _context.Clauses
+                .FromSqlRaw(MoveClauseToPositionSpCall,
+                    new SqlParameter("Id", id),
+                    new SqlParameter("Position", (int)position))
+                .AsNoTracking();
             return await GetAllAsync();
         }
     }
