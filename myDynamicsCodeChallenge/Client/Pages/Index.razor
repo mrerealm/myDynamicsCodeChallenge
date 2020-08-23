@@ -178,6 +178,7 @@
     private void GenerateClauses()
     {
         GeneratedClauses = String.Join(System.Environment.NewLine, GenerateList.OrderBy(c => c.Id).Select(c => c.Text));
+        GenerateList = new List<ClauseModel>();
         UnCheckAll();
         StateHasChanged();
     }
