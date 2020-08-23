@@ -30,10 +30,10 @@ namespace myDynamicsCodeChallenge.Server.Persistence
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Clause>().HasData(
-                new Clause { Id = 1, Text = "A"},
-                new Clause { Id = 2, Text = "B"},
-                new Clause { Id = 3, Text = "C"},
-                new Clause { Id = 4, Text = "D"}
+                new Clause { Id = 1, Text = "This is Clause A" },
+                new Clause { Id = 2, Text = "This is Clause B" },
+                new Clause { Id = 3, Text = "This is Clause C" },
+                new Clause { Id = 4, Text = "This is Clause D" }
                 );
 
             modelBuilder.Entity<ListPosition>()
