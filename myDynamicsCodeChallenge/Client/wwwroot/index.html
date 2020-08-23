@@ -8,6 +8,14 @@
     <base href="/" />
     <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" />
     <link href="css/app.css" rel="stylesheet" />
+    <script>
+        function unCheckAll(name) {
+            var checkboxes = document.getElementsByName(name);
+            for (var checkbox of checkboxes) {
+                checkbox.checked = false;
+            }
+        }
+    </script>
 </head>
 
 <body>

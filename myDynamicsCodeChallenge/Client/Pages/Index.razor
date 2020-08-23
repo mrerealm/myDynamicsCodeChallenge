@@ -62,7 +62,7 @@
                         {
                             <li class="cursor-pointer list-group-item list-group-item-success @(SelectedRightId == item.Id ? "active" : "")"
                                 @onclick="@(() => Select(item))">
-                                <input type="checkbox" id="@("checkbox"+item.Id)"
+                                <input type="checkbox" id="@("checkbox"+item.Id)" name="generateGroup"
                                        @onchange="@((ChangeEventArgs e) => ToGenerateList(item, e))">
                                 @item.Text
                             </li>
@@ -126,7 +126,6 @@
     private void MoveToRight() => MoveToList(Position.Right);
     private void MoveToLeft()
     {
-        UnCheckBox(SelectedRightId);
         RemoveFromGenerateList(SelectedRightId);
         // needs to be done before MoveToList
         MoveToList(Position.Left);
@@ -179,12 +178,13 @@
     private void GenerateClauses()
     {
         GeneratedClauses = String.Join(System.Environment.NewLine, GenerateList.OrderBy(c => c.Id).Select(c => c.Text));
+        UnCheckAll();
         StateHasChanged();
     }
 
-    private void UnCheckBox(int id)
+    private void UnCheckAll()
     {
-        JSRuntime.InvokeVoidAsync($"document.getElementById(\"checkbox{id}\").checked = false;");
+        JSRuntime.InvokeVoidAsync($"unCheckAll", "generateGroup");
     }
 
     private bool HideListButton(Position position) => !Clauses.Any(c => c.Position == position);
