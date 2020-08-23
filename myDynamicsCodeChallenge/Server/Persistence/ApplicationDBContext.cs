@@ -62,8 +62,10 @@ namespace myDynamicsCodeChallenge.Server.Persistence
 
         public async Task<int> ExecuteSqlCommandAsync(string sql, params object[] parameters)
         {
-            var context = GetContext();
-            return await context.Database.ExecuteSqlCommandAsync(sql, parameters);
+            using (var context = GetContext())
+            {
+                return await context.Database.ExecuteSqlCommandAsync(sql, parameters);
+            }
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
