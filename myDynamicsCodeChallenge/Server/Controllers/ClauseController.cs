@@ -25,46 +25,46 @@ namespace myDynamicsCodeChallenge.Server.Controllers
 
         [HttpGet]
         [Route("reset")]
-        public async Task<IEnumerable<ClauseModel>> Reset()
+        public async Task<IActionResult> Reset()
         {
             try
             {
-                return await _clauseService.ResetAsync();
+                return Ok(await _clauseService.ResetAsync());
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.GetBaseException().Message, ex);
+                return BadRequest(ex.GetBaseException().Message);
             }
-            return null;
         }
 
         [HttpGet]
-        public async Task<IEnumerable<ClauseModel>> Get()
+        public async Task<IActionResult> Get()
         {
             try
             {
-                return await _clauseService.GetAllAsync();
+                return Ok(await _clauseService.GetAllAsync());
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.GetBaseException().Message, ex);
+                return BadRequest(ex.GetBaseException().Message);
             }
-            return null;
         }
 
         [HttpGet("{id}/{position}")]
         [Route("move")]
-        public async Task<IEnumerable<ClauseModel>> MoveClauseToPosition(int id, int position)
+        public async Task<IActionResult> MoveClauseToPosition(int id, int position)
         {
             try
             {
-                return await _clauseService.MoveClauseToPositionAsync(id, (Position)position);
+                return Ok(await _clauseService.MoveClauseToPositionAsync(id, (Position)position));
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.GetBaseException().Message, ex);
+                return BadRequest(ex.GetBaseException().Message);
             }
-            return null;
         }
 
     }
