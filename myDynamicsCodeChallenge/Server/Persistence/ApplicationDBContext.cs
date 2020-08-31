@@ -53,9 +53,7 @@ namespace myDynamicsCodeChallenge.Server.Persistence
                 );
         }
 
-        public void SaveSaveChanges() => base.SaveChanges();
-
-        public DbContext GetContext()
+        private DbContext GetContext()
         {
             return (DbContext)Activator.CreateInstance(typeof(ApplicationDBContext));
         }
@@ -72,7 +70,6 @@ namespace myDynamicsCodeChallenge.Server.Persistence
         {
             if (!optionsBuilder.IsConfigured)
                 optionsBuilder.UseSqlServer(ConnectionString);
-            optionsBuilder.EnableSensitiveDataLogging().EnableDetailedErrors();
         }
     }
 }

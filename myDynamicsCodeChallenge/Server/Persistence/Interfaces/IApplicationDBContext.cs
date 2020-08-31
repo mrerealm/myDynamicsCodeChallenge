@@ -11,8 +11,6 @@ namespace myDynamicsCodeChallenge.Server.Persistence.Interfaces
         public DbSet<Clause> Clauses { get; set; }
         public DbSet<ListPosition> ListPositions { get; set; }
         public DbSet<ClausePosition> ClausePositions { get; set; }
-        DbContext GetContext();
-        public void SaveSaveChanges();
         public Task<int> ExecuteSqlCommandAsync(string sql, params object[] parameters);
     }
 }
