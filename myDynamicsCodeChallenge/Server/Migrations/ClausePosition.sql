@@ -31,7 +31,8 @@ GO
 CREATE TABLE [dbo].[ClausePositions](
 	[Id] [int] IDENTITY(1,1) NOT NULL,
 	[ClauseId] [int] NOT NULL,
-	[PositionId] [int] NOT NULL
+	[PositionId] [int] NOT NULL,
+	[Order] [int] NULL
 ) ON [PRIMARY]
 GO
 ALTER TABLE [dbo].[ClausePositions] ADD  CONSTRAINT [PK_ClausePositions] PRIMARY KEY CLUSTERED 
@@ -62,7 +63,11 @@ CREATE PROCEDURE [dbo].[MoveClauseToPosition]
     @Position INT
 )
 AS
-UPDATE ClausePositions SET PositionId = @Position 
+DECLARE @order INT
+SELECT @order = ISNULL(Max([Order]),0) FROM ClausePositions WHERE PositionId = @Position 
+UPDATE ClausePositions SET 
+    PositionId = @Position, 
+    [Order] = @order + 1
 WHERE ClauseId = @Id
 GO
 

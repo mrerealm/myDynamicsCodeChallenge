@@ -35,7 +35,8 @@ namespace myDynamicsCodeChallenge.Server.Services
                     {
                         Id = c.Id,
                         Text = c.Text,
-                        Position = (Position)cp.PositionId
+                        Position = (Position)cp.PositionId,
+                        Order = cp.Order.HasValue ? cp.Order.Value : 1
                     }).ToListAsync();
 
             return results;

@@ -106,8 +106,8 @@ app {
     min-height: 200px !important;
 }
 
-.mdButton {
-    margin-top: 10px;
+.cursor-pointer {
+    cursor: pointer;
 }
 
 .top-buffer {

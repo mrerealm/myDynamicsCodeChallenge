@@ -6,5 +6,6 @@ namespace myDynamicsCodeChallenge.Shared.Aggregates
         public int Id { get; set; }
         public int ClauseId { get; set; }
         public int PositionId { get; set; }
+        public int? Order { get; set; }
     }
 }

@@ -112,7 +112,7 @@
         Clauses = await Http.GetFromJsonAsync<List<ClauseModel>>(apiUrl);
     }
 
-    private List<ClauseModel> GetClauses(Position position) => Clauses.Where(c => c.Position == position).ToList();
+    private List<ClauseModel> GetClauses(Position position) => Clauses.Where(c => c.Position == position).OrderBy(c=> c.Order).ToList();
 
     private void Select(ClauseModel item)
     {
@@ -177,7 +177,7 @@
 
     private void GenerateClauses()
     {
-        GeneratedClauses = String.Join(System.Environment.NewLine, GenerateList.OrderBy(c => c.Id).Select(c => c.Text));
+        GeneratedClauses = String.Join(System.Environment.NewLine, GenerateList.Select(c => c.Text));
         GenerateList = new List<ClauseModel>();
         UnCheckAll();
         StateHasChanged();

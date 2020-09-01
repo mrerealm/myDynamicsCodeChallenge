@@ -8,5 +8,7 @@ namespace myDynamicsCodeChallenge.Shared.Models
         public int Id { get; set; }
         public string Text { get; set; }
         public Position Position { get; set; }
+        public int? Order { get; set; }
+
     }
 }
